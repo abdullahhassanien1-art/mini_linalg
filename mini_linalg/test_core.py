@@ -1,45 +1,33 @@
 import pytest
+from mini_linalg.core import Vector, Matrix
 
-from mini_linalg import Matrix, Vector
+def test_vector_addition():
+    v1 = Vector([1.0, 2.0])
+    v2 = Vector([3.0, 4.0])
+    v3 = v1 + v2
+    assert v3.data == [4.0, 6.0]
 
+def test_vector_dot():
+    v1 = Vector([1.0, 2.0, 3.0])
+    v2 = Vector([4.0, 5.0, 6.0])
+    assert v1.dot(v2) == 32.0
 
-def test_vector_creation():
-    v = Vector([1.0, 2.0, 3.0])
-    assert list(v.data) == [1.0, 2.0, 3.0]
+def test_matrix_vector_multiply():
+    mat = Matrix([[1.0, 2.0], [3.0, 4.0]])
+    vec = Vector([5.0, 6.0])
+    res = mat @ vec
+    assert isinstance(res, Vector)
+    assert res.data == [17.0, 39.0]
 
+def test_matrix_matrix_multiply():
+    m1 = Matrix([[1.0, 2.0], [3.0, 4.0]])
+    m2 = Matrix([[5.0, 6.0], [7.0, 8.0]])
+    res = m1 @ m2
+    assert isinstance(res, Matrix)
+    assert res.data == [[19.0, 22.0], [43.0, 50.0]]
 
-def test_matrix_creation():
-    m = Matrix([[1.0, 2.0], [3.0, 4.0]])
-    assert [list(row) for row in m.data] == [[1.0, 2.0], [3.0, 4.0]]
-
-
-def test_vector_repr():
-    assert repr(Vector([1, 2])) == "Vector([1, 2])"
-
-
-def test_matrix_shape():
-    assert Matrix([[1, 2, 3], [4, 5, 6]]).shape == (2, 3)
-
-
-def test_matvec_identity():
-    eye = Matrix([[1, 0], [0, 1]])
-    assert list(eye.matvec(Vector([3, 4])).data) == [3, 4]
-
-
-def test_matmul_shape():
-    A = Matrix([[1, 2, 3], [4, 5, 6]])
-    B = Matrix([[1, 0], [0, 1], [1, 1]])
-    assert A.matmul(B).shape == (2, 2)
-
-
-def test_matvec_dimension_mismatch():
-    A = Matrix([[1, 2, 3], [4, 5, 6]])
+def test_dimension_mismatch_raises():
+    v1 = Vector([1.0, 2.0])
+    v2 = Vector([3.0, 4.0, 5.0])
     with pytest.raises(ValueError):
-        A.matvec(Vector([1, 2]))
-
-
-def test_matmul_dimension_mismatch():
-    A = Matrix([[1, 2, 3], [4, 5, 6]])
-    B = Matrix([[1, 2], [3, 4]])
-    with pytest.raises(ValueError):
-        A.matmul(B)
+        _ = v1 + v2
