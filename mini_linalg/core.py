@@ -1,3 +1,6 @@
+from collections.abc import Sequence
+
+
 class Vector:
     def __init__(self, data: list[float]):
         self.data = data
@@ -22,11 +25,20 @@ class Vector:
 
 
 class Matrix:
+    @property
+    def shape(self) -> tuple[int, int]:
+        return len(self.data), len(self.data[0])
     def __init__(self, data: list[list[float]]):
         self.data = data
         
     def __repr__(self) -> str:
         return f"Matrix({self.data})"
+
+    def matvec(self, vector: "Vector") -> "Vector":
+        return self @ vector
+
+    def matmul(self, other: "Matrix") -> "Matrix":
+        return self @ other
 
     def __matmul__(self, other):
         """Supports Matrix-Matrix and Matrix-Vector multiplication using the @ operator or custom methods."""
@@ -63,3 +75,26 @@ class Matrix:
             return Matrix(result)
         
         raise TypeError("Unsupported operand type for @")
+
+
+def batch_matvec(
+    matrices: Sequence[Matrix], vectors: Sequence[Vector]
+) -> list[Vector]:
+    """Multiply each matrix by its corresponding vector in a batch."""
+    if len(matrices) != len(vectors):
+        raise ValueError("The number of matrices and vectors must match.")
+
+    return [matrix @ vector for matrix, vector in zip(matrices, vectors)]
+
+
+def batch_matmul(
+    left_matrices: Sequence[Matrix], right_matrices: Sequence[Matrix]
+) -> list[Matrix]:
+    """Multiply corresponding matrices in two batches."""
+    if len(left_matrices) != len(right_matrices):
+        raise ValueError("The two matrix batches must have the same size.")
+
+    return [
+        left @ right
+        for left, right in zip(left_matrices, right_matrices)
+    ]
