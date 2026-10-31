@@ -1,3 +1,4 @@
-from .core import Matrix, Vector, batch_matmul, batch_matvec
+from .implementation.matrix import Matrix, batch_matmul, batch_matvec
+from .implementation.vector import Vector
 
-__all__ = ["Matrix", "Vector", "batch_matvec", "batch_matmul"]
+__all__ = ["Matrix", "Vector", "batch_matmul", "batch_matvec"]
