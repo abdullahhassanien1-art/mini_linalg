@@ -10,3 +10,11 @@ Implementation, benchmarking suite, and Roofline model analysis for dense Matrix
 1. Install dependencies:
    ```bash
    pip install numpy matplotlib
+
+2. Run Benchmarks
+   ```bash
+   python benchmarks.py
+
+4. Generate Plots
+   ```bash
+   python plot_results.py
