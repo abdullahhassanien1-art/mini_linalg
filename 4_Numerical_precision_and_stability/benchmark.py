@@ -1,12 +1,10 @@
 import time
-import json
+import csv
 import numpy as np
 
 
 def benchmark_operation(op_type, n, dtype, warmups=3, repetitions=10):
-    """
-    Benchmarks NumPy BLAS kernels excluding memory allocation overhead.
-    """
+    
     bytes_per_elem = np.dtype(dtype).itemsize
 
     # Allocation and initialization outside timed region
@@ -114,12 +112,22 @@ def run_benchmark_suite():
                 f"BW: {res['bandwidth_gb_s']:7.2f} GB/s | "
                 f"Intensity: {res['intensity']:7.2f} FLOP/B"
             )
+    fieldnames = [
+        "operation",
+        "n",
+        "dtype",
+        "median_time_s",
+        "min_time_s",
+        "gflops",
+        "bandwidth_gb_s",
+        "intensity"
+    ]
+    with open("benchmark_results.csv", "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(results)
 
-    with open("benchmark_results.json", "w") as f:
-        json.dump(results, f, indent=2)
-
-    print("\nBenchmark completed. Results exported to benchmark_results.json")
-
+    print("\nBenchmark completed. Results exported to benchmark_results.csv")
 
 if __name__ == "__main__":
     run_benchmark_suite()
