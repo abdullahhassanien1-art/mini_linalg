@@ -22,6 +22,7 @@ def load_data(filepath="benchmark_results.csv"):
             )
     return rows
 
+
 def plot_roofline(
     data,
     p_peak_fp32=364.0,
@@ -29,7 +30,6 @@ def plot_roofline(
     b_mem=42.5,
     filename="roofline_model.png",
 ):
-   
     fig, ax = plt.subplots(figsize=(9, 6), dpi=300)
 
     # Range of Arithmetic Intensity
@@ -156,23 +156,25 @@ def plot_scaling_metrics(data, filename="performance_scaling.png"):
 
     # 3. Effective Bandwidth (GB/s) vs N
     ax = axes[2]
-    for dt, color in [("float64", "tab:blue"), ("float32", "tab:orange")]:
-        subset = [
-            d for d in data if d["operation"] == "gemv" and d["dtype"] == dt
-        ]
-        ax.plot(
-            [d["n"] for d in subset],
-            [d["bandwidth_gb_s"] for d in subset],
-            marker="s",
-            color=color,
-            label=f"GEMV ({dt})",
-        )
+    for op, ls in [("gemv", "--"), ("gemm", "-")]:
+        for dt, color in [("float64", "tab:blue"), ("float32", "tab:orange")]:
+            subset = [
+                d for d in data if d["operation"] == op and d["dtype"] == dt
+            ]
+            ax.loglog(
+                [d["n"] for d in subset],
+                [d["bandwidth_gb_s"] for d in subset],
+                marker="s",
+                linestyle=ls,
+                color=color,
+                label=f"{op.upper()} ({dt})",
+            )
     ax.set_xlabel("Problem Size $N$", fontsize=11, fontweight="bold")
     ax.set_ylabel(
         "Effective Bandwidth [GB/s]", fontsize=11, fontweight="bold"
     )
-    ax.set_title("Memory Bandwidth Saturation (GEMV)", fontsize=12)
-    ax.grid(True, linestyle=":", alpha=0.6)
+    ax.set_title("Effective Bandwidth vs. $N$", fontsize=12)
+    ax.grid(True, which="both", linestyle=":", alpha=0.6)
     ax.legend()
 
     plt.tight_layout()

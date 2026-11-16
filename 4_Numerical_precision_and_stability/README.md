@@ -7,14 +7,19 @@ Implementation, benchmarking suite, and Roofline model analysis for dense Matrix
 - `roofline_model.png` & `performance_scaling.png`: Output performance figures.
 
 ## How to Run and Reproduce
+Run these from inside this folder.
+
 1. Install dependencies:
    ```bash
    pip install numpy matplotlib
+   ```
 
-2. Run Benchmarks
+2. Run Benchmarks:
    ```bash
-   python benchmarks.py
+   python benchmark.py
+   ```
 
-4. Generate Plots
+3. Generate Plots:
    ```bash
    python plot_results.py
+   ```
