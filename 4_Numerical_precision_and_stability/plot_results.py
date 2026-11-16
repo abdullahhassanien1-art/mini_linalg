@@ -1,18 +1,32 @@
-import json
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def load_data(filepath="benchmark_results.json"):
-    with open(filepath, "r") as f:
-        return json.load(f)
-
+def load_data(filepath="benchmark_results.csv"):
+    rows = []
+    with open(filepath, "r", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(
+                {
+                    "operation": row["operation"],
+                    "n": int(row["n"]),
+                    "dtype": row["dtype"],
+                    "median_time_s": float(row["median_time_s"]),
+                    "min_time_s": float(row["min_time_s"]),
+                    "gflops": float(row["gflops"]),
+                    "bandwidth_gb_s": float(row["bandwidth_gb_s"]),
+                    "intensity": float(row["intensity"]),
+                }
+            )
+    return rows
 
 def plot_roofline(
     data,
-    p_peak_fp32=1000.0,
-    p_peak_fp64=500.0,
-    b_mem=100.0,
+    p_peak_fp32=364.0,
+    p_peak_fp64=171.4,
+    b_mem=42.5,
     filename="roofline_model.png",
 ):
    
